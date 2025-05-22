@@ -1,0 +1,160 @@
+/* Responsive Styles */
+
+/* Mobile First Approach */
+.hero-section {
+    padding: 2rem 1rem;
+}
+
+.content-wrapper {
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.text-content {
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.school-title {
+    font-size: 2rem;
+}
+
+.city-title {
+    font-size: 1.5rem;
+}
+
+.illustration-container img {
+    max-width: 100%;
+    height: auto;
+}
+
+.sambutan-wrapper {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.sambutan-image {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.kepsek-img {
+    width: 100%;
+    height: auto;
+}
+
+.program-wrapper {
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.program-list {
+    width: 100%;
+}
+
+.program-illustration {
+    display: none;
+}
+
+.prestasi-carousel {
+    padding: 0 1rem;
+}
+
+.prestasi-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.prestasi-item {
+    width: 100%;
+}
+
+.prestasi-item img {
+    width: 100%;
+    height: auto;
+}
+
+.berita-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.berita-item {
+    width: 100%;
+}
+
+.berita-image img {
+    width: 100%;
+    height: auto;
+}
+
+/* Tablet (768px and up) */
+@media (min-width: 768px) {
+    .content-wrapper {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .text-content {
+        text-align: left;
+        flex: 1;
+    }
+
+    .school-title {
+        font-size: 2.5rem;
+    }
+
+    .sambutan-wrapper {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .sambutan-image {
+        width: 40%;
+    }
+
+    .sambutan-content {
+        width: 60%;
+    }
+
+    .program-wrapper {
+        flex-direction: row;
+    }
+
+    .program-illustration {
+        display: block;
+        width: 40%;
+    }
+
+    .program-list {
+        width: 60%;
+    }
+}
+
+/* Desktop (1024px and up) */
+@media (min-width: 1024px) {
+    .hero-section {
+        padding: 4rem 2rem;
+    }
+
+    .school-title {
+        font-size: 3rem;
+    }
+
+    .city-title {
+        font-size: 2rem;
+    }
+
+    .prestasi-wrapper {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .berita-wrapper {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
