@@ -9,9 +9,17 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class GuruController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $gurus = Guru::orderBy('nama')->get();
+        $search = $request->input('search');
+        
+        $gurus = Guru::when($search, function($query) use ($search) {
+                return $query->where('nama', 'like', '%'.$search.'%')
+                            ->orWhere('jabatan', 'like', '%'.$search.'%');
+            })
+            ->orderBy('nama')  // Order before pagination
+            ->paginate(10);    // Paginate comes last
+
         return view('admin.guru.index', compact('gurus'));
     }
 
@@ -24,7 +32,7 @@ class GuruController extends Controller
         ]);
 
         $uploadedFile = $request->file('foto');
-        $image = Cloudinary::upload($uploadedFile->getRealPath(), [
+        $image = cloudinary()->uploadApi()->upload($uploadedFile->getRealPath(), [
             'folder' => 'guru',
             'transformation' => [
                 'quality' => 'auto',
@@ -45,8 +53,8 @@ class GuruController extends Controller
         $result = Guru::create([
             'nama' => $nama,
             'jabatan' => strtolower($request->jabatan),
-            'public_id' => $image->getPublicId(),
-            'url_file' => $image->getSecurePath()
+            'public_id' => $image['public_id'],
+            'url_file' => $image['secure_url']
         ]);
         if (!$result) {
             return redirect()->route('admin.guru.index')->with('error', 'Gagal menambahkan data guru/staff');
@@ -81,14 +89,14 @@ class GuruController extends Controller
 
         if ($request->hasFile('foto')) {
             if ($guru->public_id) {
-               $result = Cloudinary::destroy($guru->public_id);
+               $result = cloudinary()->uploadApi()->destroy($guru->public_id);
                if (!$result) {
                    return redirect()->route('admin.guru.index')->with('error', 'Gagal menghapus foto dari Cloudinary');
                }
             }
 
             $uploadedFile = $request->file('foto');
-            $result = Cloudinary::upload($uploadedFile->getRealPath(), [
+            $result = cloudinary()->uploadApi()->upload($uploadedFile->getRealPath(), [
                 'folder' => 'guru',
                 'transformation' => [
                     'quality' => 'auto',
@@ -100,8 +108,8 @@ class GuruController extends Controller
                 return redirect()->route('admin.guru.index')->with('error', 'Gagal mengunggah foto ke Cloudinary');
             }
 
-            $data['public_id'] = $result->getPublicId();
-            $data['url_file'] = $result->getSecurePath();
+            $data['public_id'] = $result['public_id'];
+            $data['url_file'] = $result['secure_url'];
         }
 
         $result = $guru->update($data);
@@ -117,7 +125,7 @@ class GuruController extends Controller
         $guru = Guru::findOrFail($id);
 
         if ($guru->public_id) {
-            $result = Cloudinary::destroy($guru->public_id);
+            $result = cloudinary()->uploadApi()->destroy($guru->public_id);
             if (!$result) {
                 return redirect()->route('admin.guru.index')->with('error', 'Gagal menghapus foto dari Cloudinary');
             }

@@ -11,6 +11,14 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         .overlay-content {
@@ -23,6 +31,14 @@
             border-radius: 10px;
             width: 90%;
             max-width: 500px;
+            transform: translate(-50%, -50%) scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active .overlay-content {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
         }
 
         .close-overlay {
@@ -44,18 +60,45 @@
             height: 100px;
             object-fit: cover;
         }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .showing-entries {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .pagination {
+            margin: 0;
+        }
     </style>
 @endpush
 
 @section('content')
-    <div class="container py-5 mt-5">
+    <div class="container py-5 my-5">
         <div class="card shadow-lg border-0" style="border-radius: 15px;">
             <div class="card-header d-flex justify-content-between align-items-center py-3"
                 style="background-color: #3970be;">
                 <h3 class="mb-0 text-white fw-bold">@yield('title')</h3>
-                <button class="btn btn-light" id="addButton">
-                    <i class="fas fa-plus me-1"></i> Tambah
-                </button>
+                <div class="d-flex align-items-center">
+                    <form method="GET" action="@yield('search-action')" class="me-3">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Cari..."
+                                value="{{ request('search') }}" style="min-width: 200px;">
+                            <button class="btn btn-light" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <button class="btn btn-light" id="addButton">
+                        <i class="fas fa-plus me-1"></i> Tambah
+                    </button>
+                </div>
             </div>
             <div class="card-body p-4">
                 <div class="table-responsive">
@@ -70,6 +113,14 @@
                             @yield('table-content')
                         </tbody>
                     </table>
+                    <div class="pagination-container">
+                        <div class="showing-entries">
+                            @yield('showing-entries')
+                        </div>
+                        <div class="pagination">
+                            @yield('pagination')
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -160,19 +211,35 @@
         });
 
         function showAddOverlay() {
-            document.getElementById('addOverlay').style.display = 'block';
+            const overlay = document.getElementById('addOverlay');
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 10);
         }
 
         function hideAddOverlay() {
-            document.getElementById('addOverlay').style.display = 'none';
+            const overlay = document.getElementById('addOverlay');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300); // Sesuaikan dengan durasi transisi
         }
 
         function showEditOverlay() {
-            document.getElementById('editOverlay').style.display = 'block';
+            const overlay = document.getElementById('editOverlay');
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 10);
         }
 
         function hideEditOverlay() {
-            document.getElementById('editOverlay').style.display = 'none';
+            const overlay = document.getElementById('editOverlay');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300); // Sesuaikan dengan durasi transisi
         }
 
 

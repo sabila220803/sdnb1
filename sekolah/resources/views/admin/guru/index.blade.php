@@ -2,6 +2,8 @@
 
 @section('title', 'Kelola Guru & Staff')
 
+@section('search-action', route('admin.guru.index'))
+
 @section('table-headers')
     <th>No</th>
     <th>Nama</th>
@@ -10,9 +12,9 @@
 @endsection
 
 @section('table-content')
-    @foreach ($gurus as $index => $guru)
+    @foreach ($gurus as $guru)
         <tr>
-            <td class="align-middle">{{ $index + 1 }}</td>
+            <td class="align-middle">{{ ($gurus->currentPage() - 1) * $gurus->perPage() + $loop->iteration }}</td>
             <td class="align-middle">
                 {{ preg_replace_callback('/(?:^|[.,!?]\s*|\s+)\w/i',function ($matches) {return strtoupper($matches[0]);},strtolower($guru->nama)) }}
             </td>
@@ -33,6 +35,15 @@
         </tr>
     @endforeach
 @endsection
+
+@section('showing-entries')
+    Menampilkan <b>{{ $gurus->firstItem() }}</b> sampai <b>{{ $gurus->lastItem() }}</b> dari <b>{{ $gurus->total() }}</b> data
+@endsection
+
+@section('pagination')
+    {{ $gurus->onEachSide(1)->links('pagination::bootstrap-4') }}
+@endsection
+
 
 @section('form-title', 'Tambah Guru/Staff')
 @section('form-action', route('admin.guru.store'))

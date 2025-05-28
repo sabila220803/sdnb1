@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container py-5 mt-5">
+    <div class="container py-5 my-5">
         <div class="row">
             <div class="col-12 mb-4">
                 <div class="card shadow-lg border-0" style="border-radius: 15px; overflow: hidden;">
