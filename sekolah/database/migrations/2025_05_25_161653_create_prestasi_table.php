@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('nama_lomba');
             $table->string('tingkat');
             $table->integer('juara');
+            $table->string('tahun');
+            $table->string('url_file');
+            $table->string('public_id');
             $table->timestamps();
         });
     }

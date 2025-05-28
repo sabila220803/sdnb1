@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('peserta_didik', function (Blueprint $table) {
+        Schema::create('guru', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->enum('jenis_kelamin', ['L', 'P']);
-            $table->integer('kelas');
-            $table->string('url_file')->nullable();
-            $table->string('public_id')->nullable();
+            $table->string('jabatan');
+            $table->string('url_file');
+            $table->string('public_id');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('peserta_didik');
+        Schema::dropIfExists('guru');
     }
 };

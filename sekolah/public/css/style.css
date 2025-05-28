@@ -65,7 +65,7 @@
 }
 
 .navbar-nav .nav-link::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -5px;
     left: 0;
@@ -81,10 +81,10 @@
 
 /* Styling untuk dropdown menu */
 .dropdown-menu {
-    background-color: #3970BE;
+    background-color: #3970be;
     border: none;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 0.5rem;
     margin-top: 0.5rem;
 }
@@ -97,13 +97,13 @@
 }
 
 .dropdown-item:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: #FFD700;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffd700;
     transform: translateX(5px);
 }
 
 .dropdown-toggle::after {
-    content: '▼';
+    content: "▼";
     margin-left: 0.5rem;
     vertical-align: middle;
     font-size: 0.7em;
@@ -114,14 +114,42 @@
     transform: rotate(180deg);
 }
 
+.nav-item.dropdown {
+    position: relative;
+}
+
+.nav-item.dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
 .nav-item.dropdown:hover .dropdown-menu {
     display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+@media (max-width: 991.98px) {
+    .nav-item.dropdown .dropdown-menu {
+        position: static;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+    }
 }
 
 .btn-warning {
-    background-color: #FFD700;
-    border-color: #FFD700;
-    color: #3970BE;
+    background-color: #ffd700;
+    border-color: #ffd700;
+    color: #3970be;
 }
 
 /* Tambahkan di file style.css */
@@ -132,7 +160,7 @@
 
 .navbar-brand img {
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand small {
@@ -142,7 +170,8 @@
 }
 
 /* Reset default margin dan padding */
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -161,8 +190,8 @@ html, body {
 
 /* Styling untuk button primary */
 .btn-primary {
-    background-color: #3970BE;
-    border-color: #3970BE;
+    background-color: #3970be;
+    border-color: #3970be;
 }
 
 .btn-primary:hover {
@@ -175,7 +204,7 @@ html, body {
     position: relative;
     height: 80vh;
     width: 100vw;
-    background: url('../images/sekolah-bg.jpg') no-repeat center center;
+    background: url("../images/sekolah-bg.jpg") no-repeat center center;
     background-size: cover;
     display: flex;
     align-items: center;
@@ -220,7 +249,7 @@ html, body {
 }
 
 .hero-section::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -282,7 +311,7 @@ html, body {
 }
 
 .banner-section::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -296,7 +325,7 @@ html, body {
 }
 
 .breadcrumb-item a:hover {
-    color: #FFD700 !important;
+    color: #ffd700 !important;
 }
 
 .text-justify {
@@ -305,7 +334,7 @@ html, body {
 
 .school-image-section img {
     border: 8px solid #fff;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     display: block;
     margin: 0 auto;
@@ -339,7 +368,7 @@ html, body {
 .timeline-item {
     position: relative;
     padding: 20px;
-    border-left: 3px solid #3970BE;
+    border-left: 3px solid #3970be;
     margin-bottom: 30px;
     transition: all 0.3s ease;
 }
@@ -350,13 +379,13 @@ html, body {
 }
 
 .timeline-item::before {
-    content: '';
+    content: "";
     position: absolute;
     left: -10px;
     top: 50%;
     width: 15px;
     height: 15px;
-    background: #3970BE;
+    background: #3970be;
     border-radius: 50%;
     transform: translateY(-50%);
 }
@@ -390,20 +419,19 @@ html, body {
     transform: translateY(-5px);
 }
 
-
 @media (max-width: 991.98px) {
     .school-title {
         font-size: 2.5rem;
     }
-    
+
     .city-title {
         font-size: 2rem;
     }
-    
+
     .school-motto {
         font-size: 1.2rem;
     }
-    
+
     .text-content {
         text-align: center;
         margin-bottom: 2rem;
@@ -418,13 +446,13 @@ html, body {
 }
 
 .motto-box::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -15px;
     left: -15px;
     width: 60px;
     height: 60px;
-    background: url('../images/quote-icon.png') no-repeat;
+    background: url("../images/quote-icon.png") no-repeat;
     background-size: contain;
 }
 
@@ -432,18 +460,16 @@ html, body {
     .hero-section {
         text-align: center;
     }
-    
+
     .motto-box {
         margin-bottom: 2rem;
     }
-    
+
     .motto-box::before {
         left: 50%;
         transform: translateX(-50%);
     }
 }
-
-
 
 /* C:\xampp\htdocs\sdnb1\sekolah\public\css\style.css */
 
@@ -454,7 +480,7 @@ html, body {
 
 .hover-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
 }
 
 .card {
@@ -487,7 +513,7 @@ footer i {
 
 /* Sambutan Section Styles */
 .sambutan-section {
-    background-color: #3970BE;
+    background-color: #3970be;
     color: white;
 }
 
@@ -506,7 +532,7 @@ footer i {
     width: 100%;
     height: auto;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .kepsek-info h4 {
@@ -529,13 +555,13 @@ footer i {
 }
 
 .sambutan-title::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100px;
     height: 3px;
-    background-color: #FFD700;
+    background-color: #ffd700;
 }
 
 .sambutan-text {
@@ -564,8 +590,6 @@ footer i {
     }
 }
 
-
-
 /* Program Section Styles */
 .program-section {
     background-color: #ffffff;
@@ -573,7 +597,7 @@ footer i {
 }
 
 .program-title {
-    color: #3970BE;
+    color: #3970be;
     font-size: 2.5rem;
     font-weight: 700;
     position: relative;
@@ -582,14 +606,14 @@ footer i {
 }
 
 .program-title::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background-color: #3970BE;
+    background-color: #3970be;
 }
 
 .program-wrapper {
@@ -606,7 +630,7 @@ footer i {
 }
 
 .program-item {
-    border: 2px solid #3970BE;
+    border: 2px solid #3970be;
     border-radius: 10px;
     transition: all 0.3s ease;
 }
@@ -619,7 +643,7 @@ footer i {
 .program-link {
     display: block;
     padding: 1.5rem;
-    color: #3970BE;
+    color: #3970be;
     text-decoration: none;
     font-weight: 600;
     text-align: center;
@@ -627,7 +651,7 @@ footer i {
 }
 
 .program-link:hover {
-    color: #FFD700;
+    color: #ffd700;
 }
 
 .program-illustration {
@@ -668,7 +692,7 @@ footer i {
 
 .mission-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .mission-item p {
@@ -685,7 +709,7 @@ footer i {
 }
 
 .berita-title {
-    color: #3970BE;
+    color: #3970be;
     font-size: 2.5rem;
     font-weight: 700;
     position: relative;
@@ -694,14 +718,14 @@ footer i {
 }
 
 .berita-title::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background-color: #3970BE;
+    background-color: #3970be;
 }
 
 .berita-wrapper {
@@ -715,7 +739,7 @@ footer i {
     background: white;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 
@@ -753,8 +777,8 @@ footer i {
 }
 
 .berita-content .btn-primary {
-    background-color: #3970BE;
-    border-color: #3970BE;
+    background-color: #3970be;
+    border-color: #3970be;
     padding: 0.5rem 1.5rem;
 }
 
@@ -764,12 +788,12 @@ footer i {
 }
 
 .btn-outline-primary {
-    color: #3970BE;
-    border-color: #3970BE;
+    color: #3970be;
+    border-color: #3970be;
 }
 
 .btn-outline-primary:hover {
-    background-color: #3970BE;
+    background-color: #3970be;
     color: white;
 }
 
@@ -792,7 +816,7 @@ footer i {
 }
 
 .berita-page-title {
-    color: #3970BE;
+    color: #3970be;
     font-size: 2.5rem;
     font-weight: 700;
     position: relative;
@@ -801,14 +825,14 @@ footer i {
 }
 
 .berita-page-title::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background-color: #3970BE;
+    background-color: #3970be;
 }
 
 .berita-page-wrapper {
@@ -822,7 +846,7 @@ footer i {
     background: white;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 
@@ -860,8 +884,8 @@ footer i {
 }
 
 .berita-page-content .btn-primary {
-    background-color: #3970BE;
-    border-color: #3970BE;
+    background-color: #3970be;
+    border-color: #3970be;
     padding: 0.5rem 1.5rem;
 }
 
@@ -884,7 +908,7 @@ footer i {
 
 /* Prestasi Section Styles */
 .prestasi-section {
-    background-color:   #3970BE;
+    background-color: #3970be;
     padding: 4rem 0;
     color: white;
 }
@@ -901,14 +925,14 @@ footer i {
 }
 
 .prestasi-title::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background-color: #FFD700;
+    background-color: #ffd700;
 }
 
 .prestasi-carousel {
@@ -934,14 +958,14 @@ footer i {
     border-radius: 10px;
     padding: 1rem;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     flex: 0 0 calc(25% - 1rem);
     transition: transform 0.3s ease;
 }
 
 .prestasi-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .prestasi-item img {
@@ -950,11 +974,11 @@ footer i {
     object-fit: cover;
     border-radius: 10px;
     margin-bottom: 1rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .prestasi-item h4 {
-    color: #3970BE;
+    color: #3970be;
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
 }
@@ -987,7 +1011,7 @@ footer i {
 }
 
 .prestasi-nav i {
-    color: #3970BE;
+    color: #3970be;
     font-size: 1.5rem;
 }
 
@@ -996,7 +1020,7 @@ footer i {
         width: 150px;
         height: 150px;
     }
-    
+
     .prestasi-nav {
         width: 35px;
         height: 35px;
@@ -1010,8 +1034,8 @@ header {
     left: 0;
     right: 0;
     z-index: 1030;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    background-color: #3970BE;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #3970be;
 }
 
 body {

@@ -73,8 +73,9 @@
 }
 
 .prestasi-item img {
-    width: 100%;
-    height: auto;
+    height: 200px;
+    width: 223px;
+    object-fit: cover;
 }
 
 .berita-wrapper {
