@@ -2,30 +2,43 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Murid;
-use Cloudinary;
+use App\Http\Controllers\Controller;
+use App\Models\PesertaDidik as Murid;
+use App\Http\Requests\Murid\MuridRequest;
 
 class MuridController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $murids = Murid::orderBy('kelas')->orderBy('nama')->get();
-        return view('admin.murid.index', compact('murids'));
+        $search = $request->input('search');
+        
+        $gurus = Murid::when($search, function($query) use ($search) {
+                return $query->where('nama', 'like', '%'.$search.'%')
+                            ->orWhere('kelas', 'like', '%'.$search.'%')
+                            ->orWhere('jenis_kelamin', 'like', '%'.$search.'%');;
+            })
+            ->orderBy('nama')  // Order before pagination
+            ->paginate(10);    // Paginate comes last
+
+            return view('admin.murid.index', compact('murids'));
     }
 
-    public function store(Request $request)
+    public function store(MuridRequest $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'kelas' => 'required|integer|between:1,6',
-            'jenis_kelamin' => 'required|in:L,P',
-            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
+        $data = $request->validated();
 
-        $uploadedFile = $request->file('foto');
-        $result = Cloudinary::upload($uploadedFile->getRealPath());
+        $result = cloudinary()->uploadApi()->upload($data['foto']->getRealPath(), [
+            'folder' => 'pesertaDidik',
+            'transformation' => [
+                'quality' => 'auto',
+                'fetch_format' => 'auto',
+                'compression' => 'low',
+            ]
+        ]);
+        if (!$result) {
+            return redirect()->route('admin.murid.index')->with('error', 'Gagal mengunggah foto');
+        }
 
         // Format nama dengan proper case
         $nama = preg_replace_callback(
@@ -33,16 +46,20 @@ class MuridController extends Controller
             function ($matches) {
                 return ucfirst(strtolower($matches[0]));
             },
-            $request->nama
+            $data['nama']
         );
 
-        Murid::create([
+        $murid = Murid::create([
             'nama' => $nama,
-            'kelas' => $request->kelas,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'public_id' => $result->getPublicId(),
-            'url_file' => $result->getSecurePath()
+            'kelas' => $data['kelas'],
+            'jenis_kelamin' => $data['jenis_kelamin'],
+            'public_id' => $result['public_id'],
+            'url_file' => $result['secure_url']
         ]);
+
+        if (!$murid) {
+            return redirect()->route('admin.murid.index')->with('error', 'Gagal menambahkan data murid');
+        }
 
         return redirect()->route('admin.murid.index')->with('success', 'Data murid berhasil ditambahkan');
     }
@@ -53,45 +70,39 @@ class MuridController extends Controller
         return response()->json($murid);
     }
 
-    public function update(Request $request, $id)
+    public function update(MuridRequest $request, $id)
     {
         $murid = Murid::findOrFail($id);
 
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'kelas' => 'required|integer|between:1,6',
-            'jenis_kelamin' => 'required|in:L,P',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
+        $data = $request->validated();
 
-        // Format nama dengan proper case
-        $nama = preg_replace_callback(
-            '/\b[a-z]+\b|\b[A-Z]+\b|^[a-z]/m',
-            function ($matches) {
-                return ucfirst(strtolower($matches[0]));
-            },
-            $request->nama
-        );
-
-        $data = [
-            'nama' => $nama,
-            'kelas' => $request->kelas,
-            'jenis_kelamin' => $request->jenis_kelamin
-        ];
-
-        if ($request->hasFile('foto')) {
+        if ($data['foto'] != null) {
             if ($murid->public_id) {
-                Cloudinary::destroy($murid->public_id);
+                cloudinary()->uploadApi()->destroy($murid->public_id);
             }
 
-            $uploadedFile = $request->file('foto');
-            $result = Cloudinary::upload($uploadedFile->getRealPath());
+            $result = cloudinary()->uploadApi()->upload($data['foto']->getRealPath(), [
+                'folder' => 'pesertaDidik',
+                'transformation' => [
+                    'quality' => 'auto',
+                    'fetch_format' => 'auto',
+                    'compression' => 'low',
+                ]
+            ]);
 
-            $data['public_id'] = $result->getPublicId();
-            $data['url_file'] = $result->getSecurePath();
+            $data = [
+                'nama' => strtolower($data['nama']),
+                'kelas' => $data['kelas'],
+                'jenis_kelamin' => $data['jenis_kelamin'],
+                'public_id' => $result['public_id'],
+                'url_file' => $result['secure_url']
+            ];
         }
 
-        $murid->update($data);
+        $result = $murid->update($data);
+        if (!$result) {
+            return redirect()->route('admin.murid.index')->with('error', 'Gagal memperbarui data murid');
+        }
 
         return redirect()->route('admin.murid.index')->with('success', 'Data murid berhasil diperbarui');
     }
@@ -101,7 +112,7 @@ class MuridController extends Controller
         $murid = Murid::findOrFail($id);
 
         if ($murid->public_id) {
-            Cloudinary::destroy($murid->public_id);
+            cloudinary()->uploadApi()->destroy($murid->public_id);
         }
 
         $murid->delete();

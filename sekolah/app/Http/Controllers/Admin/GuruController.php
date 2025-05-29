@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Guru;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use App\Http\Requests\Guru\StoreGuruRequest;
+use App\Http\Requests\Guru\UpdateGuruRequest;
 
 class GuruController extends Controller
 {
@@ -23,16 +24,11 @@ class GuruController extends Controller
         return view('admin.guru.index', compact('gurus'));
     }
 
-    public function store(Request $request)
+    public function store(StoreGuruRequest $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'jabatan' => 'required|string',
-            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
+        $data = $request->validated();
 
-        $uploadedFile = $request->file('foto');
-        $image = cloudinary()->uploadApi()->upload($uploadedFile->getRealPath(), [
+        $image = cloudinary()->uploadApi()->upload($data['foto']->getRealPath(), [
             'folder' => 'guru',
             'transformation' => [
                 'quality' => 'auto',
@@ -47,12 +43,12 @@ class GuruController extends Controller
             function ($matches) {
                 return ucfirst(strtolower($matches[0]));
             },
-            $request->nama
+            $data['nama']
         );
 
         $result = Guru::create([
             'nama' => $nama,
-            'jabatan' => strtolower($request->jabatan),
+            'jabatan' => strtolower($data['jabatan']),
             'public_id' => $image['public_id'],
             'url_file' => $image['secure_url']
         ]);
@@ -69,25 +65,19 @@ class GuruController extends Controller
         return response()->json($guru);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateGuruRequest $request, $id)
     {
         $guru = Guru::findOrFail($id);
 
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'jabatan' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
-
-        // Format nama dengan proper case
-        $nama = strtolower($request->nama);
+        $data = $request->validated();
 
         $data = [
-            'nama' => $nama,
-            'jabatan' => strtolower($request->jabatan)
+            'nama' => strtolower($data['nama']),
+            'jabatan' => strtolower($data['jabatan']),
+            'foto' => $data['foto'] ?? '',
         ];
 
-        if ($request->hasFile('foto')) {
+        if ($data['foto'] != null) {
             if ($guru->public_id) {
                $result = cloudinary()->uploadApi()->destroy($guru->public_id);
                if (!$result) {
@@ -95,7 +85,7 @@ class GuruController extends Controller
                }
             }
 
-            $uploadedFile = $request->file('foto');
+            $uploadedFile = $data['foto'];
             $result = cloudinary()->uploadApi()->upload($uploadedFile->getRealPath(), [
                 'folder' => 'guru',
                 'transformation' => [

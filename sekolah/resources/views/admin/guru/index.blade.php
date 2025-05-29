@@ -37,7 +37,8 @@
 @endsection
 
 @section('showing-entries')
-    Menampilkan <b>{{ $gurus->firstItem() }}</b> sampai <b>{{ $gurus->lastItem() }}</b> dari <b>{{ $gurus->total() }}</b> data
+    Menampilkan <b>{{ $gurus->firstItem() }}</b> sampai <b>{{ $gurus->lastItem() }}</b> dari <b>{{ $gurus->total() }}</b>
+    data
 @endsection
 
 @section('pagination')

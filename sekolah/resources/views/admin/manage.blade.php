@@ -187,6 +187,22 @@
                     showConfirmButton: true
                 });
             @endif
+
+            // Notifikasi SweetAlert untuk pesan kesalahan validasi
+            @if ($errors->any())
+                let errorMessages = '';
+                @foreach ($errors->all() as $error)
+                    errorMessages += '{{ $error }}' + '\n';
+                @endforeach
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Validasi',
+                    text: errorMessages,
+                    showConfirmButton: true
+                });
+            @endif
+
             // Add Button Event
             document.getElementById('addButton').addEventListener('click', showAddOverlay);
             document.getElementById('closeAddOverlay').addEventListener('click', hideAddOverlay);
