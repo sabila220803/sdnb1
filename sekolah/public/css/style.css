@@ -959,13 +959,27 @@ footer i {
     padding: 1rem;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex: 0 0 calc(25% - 1rem);
+    flex: 0 0 calc(33.333% - 1rem); /* Mengubah menjadi 3 item per baris */
     transition: transform 0.3s ease;
 }
 
 .prestasi-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling untuk tombol navigasi */
+.prestasi-prev,
+.prestasi-next {
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.prestasi-prev:hover,
+.prestasi-next:hover {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 .prestasi-item img {

@@ -6,10 +6,26 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let currentIndex = 0;
     const totalItems = items.length;
-    const itemsPerView = 4;
-    const maxIndex = totalItems - itemsPerView;
-    const itemWidth = wrapper.clientWidth / itemsPerView;
+    const itemsPerView = 3; // Menampilkan 3 item per view
+    const maxIndex = Math.max(0, totalItems - itemsPerView);
+    let itemWidth = 0;
     let isAnimating = false;
+    let autoSlideInterval;
+    
+    // Fungsi untuk menghitung lebar item
+    function calculateItemWidth() {
+        // Mendapatkan lebar wrapper dan menghitung lebar item berdasarkan jumlah item per view
+        const wrapperWidth = wrapper.clientWidth;
+        itemWidth = wrapperWidth / itemsPerView;
+        
+        // Mengatur lebar item
+        items.forEach(item => {
+            item.style.flex = `0 0 ${itemWidth}px`;
+        });
+    }
+    
+    // Panggil fungsi untuk menghitung lebar item
+    calculateItemWidth();
     
     // Fungsi untuk menggeser carousel dengan animasi
     function slideCarousel(direction) {
@@ -35,43 +51,47 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Event listener untuk tombol navigasi
-    prevBtn.addEventListener('click', () => slideCarousel('prev'));
-    nextBtn.addEventListener('click', () => slideCarousel('next'));
+    prevBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        slideCarousel('prev');
+    });
     
-    // Auto slide setiap 5 detik
-    const autoSlideInterval = setInterval(() => {
-        if (currentIndex < maxIndex) {
-            slideCarousel('next');
-        } else {
-            currentIndex = -1; // Reset ke awal
-            slideCarousel('next');
-        }
-    }, 5000);
+    nextBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        slideCarousel('next');
+    });
     
-    // Hentikan auto slide saat user berinteraksi
+    // Fungsi untuk auto slide
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(() => {
+            if (currentIndex < maxIndex) {
+                slideCarousel('next');
+            } else {
+                // Reset ke awal
+                currentIndex = 0;
+                wrapper.style.transform = 'translateX(0)';
+            }
+        }, 5000);
+    }
+    
+    // Mulai auto slide
+    startAutoSlide();
+    
+    // Hentikan auto slide saat hover
     wrapper.addEventListener('mouseenter', () => {
         clearInterval(autoSlideInterval);
     });
     
-    // Tambahkan touch support untuk mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    wrapper.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
+    // Mulai kembali auto slide setelah hover selesai
+    wrapper.addEventListener('mouseleave', () => {
+        startAutoSlide();
     });
     
-    wrapper.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].clientX;
-        const difference = touchStartX - touchEndX;
-        
-        if (Math.abs(difference) > 50) { // Minimal swipe distance
-            if (difference > 0) {
-                slideCarousel('next');
-            } else {
-                slideCarousel('prev');
-            }
-        }
+    // Recalculate item width on window resize
+    window.addEventListener('resize', () => {
+        calculateItemWidth();
+        // Reset position after resize
+        currentIndex = 0;
+        wrapper.style.transform = 'translateX(0)';
     });
-}
-)
+});

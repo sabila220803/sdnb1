@@ -7,6 +7,30 @@
             height: 450px;
             object-fit: cover;
         }
+
+        .prestasi-carousel {
+            overflow: hidden;
+            padding: 0 50px;
+        }
+
+        .prestasi-wrapper {
+            transition: transform 0.5s ease;
+        }
+
+        .prestasi-item {
+            flex: 0 0 calc(33.333% - 1rem);
+            max-width: calc(33.333% - 1rem);
+        }
+
+        .prestasi-prev,
+        .prestasi-next {
+            transition: opacity 0.3s ease;
+        }
+
+        .prestasi-prev:hover,
+        .prestasi-next:hover {
+            opacity: 0.8;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
 @endpush
@@ -93,8 +117,8 @@
     <div class="prestasi-section">
         <div class="container py-5">
             <h2 class="prestasi-title text-center mb-5" data-aos="fade-up">Prestasi</h2>
-            <div class="prestasi-carousel">
-                <div class="prestasi-wrapper">
+            <div class="prestasi-carousel position-relative">
+                <div class="prestasi-wrapper d-flex transition-transform" style="gap: 1rem;">
                     @foreach ($prestasis as $prestasi)
                         <div class="prestasi-item" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                             {{-- <x-cloudinary::image public-id="{{ $prestasi->public_id }}"
@@ -125,15 +149,12 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="prestasi-nav prestasi-prev">
-                    <i class="fas fa-chevron-left"></i>
-                </div>
-                <div class="prestasi-nav prestasi-next">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
+                <button class="prestasi-prev position-absolute top-50 start-0 translate-middle-y btn btn-primary rounded-circle" style="z-index: 10; width: 40px; height: 40px; padding: 0;">❮</button>
+                <button class="prestasi-next position-absolute top-50 end-0 translate-middle-y btn btn-primary rounded-circle" style="z-index: 10; width: 40px; height: 40px; padding: 0;">❯</button>
             </div>
         </div>
     </div>
+    
     <div class="berita-section">
         <div class="container py-5">
             <h2 class="berita-title text-center mb-5" data-aos="fade-up">Berita</h2>
@@ -159,10 +180,6 @@
     </div>
 @endsection
 @push('scripts')
-    <script>
-        // Prestasi Carousel Script
-        <
-        script src = "{{ asset('js/prestasi-carousel.js') }}" >
-    </script>
-    </script>
+    <!-- Prestasi Carousel Script -->
+    <script src="{{ asset('js/prestasi-carousel.js') }}"></script>
 @endpush
