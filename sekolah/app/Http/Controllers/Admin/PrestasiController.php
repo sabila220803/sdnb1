@@ -35,7 +35,7 @@ class PrestasiController extends Controller
 
         $image = cloudinary()
             ->uploadApi()
-            ->upload($$data['foto']->getRealPath(), [
+            ->upload($data['foto']->getRealPath(), [
                 'folder' => 'prestasi',
                 'transformation' => [
                     'quality' => 'auto',
