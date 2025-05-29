@@ -13,13 +13,12 @@ class GuruController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        
-        $gurus = Guru::when($search, function($query) use ($search) {
-                return $query->where('nama', 'like', '%'.$search.'%')
-                            ->orWhere('jabatan', 'like', '%'.$search.'%');
-            })
-            ->orderBy('nama')  // Order before pagination
-            ->paginate(10);    // Paginate comes last
+
+        $gurus = Guru::when($search, function ($query) use ($search) {
+            return $query->where('nama', 'like', '%' . $search . '%')->orWhere('jabatan', 'like', '%' . $search . '%');
+        })
+            ->orderBy('created_at', 'DESC') // Order before pagination
+            ->paginate(10); // Paginate comes last
 
         return view('admin.guru.index', compact('gurus'));
     }
@@ -28,14 +27,16 @@ class GuruController extends Controller
     {
         $data = $request->validated();
 
-        $image = cloudinary()->uploadApi()->upload($data['foto']->getRealPath(), [
-            'folder' => 'guru',
-            'transformation' => [
-                'quality' => 'auto',
-                'fetch_format' => 'auto',
-                'compression' => 'low',
-            ]
-        ]);
+        $image = cloudinary()
+            ->uploadApi()
+            ->upload($data['foto']->getRealPath(), [
+                'folder' => 'guru',
+                'transformation' => [
+                    'quality' => 'auto',
+                    'fetch_format' => 'auto',
+                    'compression' => 'low',
+                ],
+            ]);
 
         // Format nama dengan proper case dan penanganan gelar
         $nama = preg_replace_callback(
@@ -43,16 +44,17 @@ class GuruController extends Controller
             function ($matches) {
                 return ucfirst(strtolower($matches[0]));
             },
-            $data['nama']
+            $data['nama'],
         );
 
         $result = Guru::create([
             'nama' => $nama,
             'jabatan' => strtolower($data['jabatan']),
             'public_id' => $image['public_id'],
-            'url_file' => $image['secure_url']
+            'url_file' => $image['secure_url'],
         ]);
         if (!$result) {
+            cloudinary()->uploadApi()->destroy($image['public_id']);
             return redirect()->route('admin.guru.index')->with('error', 'Gagal menambahkan data guru/staff');
         }
 
@@ -79,21 +81,23 @@ class GuruController extends Controller
 
         if ($data['foto'] != null) {
             if ($guru->public_id) {
-               $result = cloudinary()->uploadApi()->destroy($guru->public_id);
-               if (!$result) {
-                   return redirect()->route('admin.guru.index')->with('error', 'Gagal menghapus foto dari Cloudinary');
-               }
+                $result = cloudinary()->uploadApi()->destroy($guru->public_id);
+                if (!$result) {
+                    return redirect()->route('admin.guru.index')->with('error', 'Gagal menghapus foto dari Cloudinary');
+                }
             }
 
             $uploadedFile = $data['foto'];
-            $result = cloudinary()->uploadApi()->upload($uploadedFile->getRealPath(), [
-                'folder' => 'guru',
-                'transformation' => [
-                    'quality' => 'auto',
-                    'fetch_format' => 'auto',
-                    'compression' => 'low',
-                ]
-            ]);
+            $result = cloudinary()
+                ->uploadApi()
+                ->upload($uploadedFile->getRealPath(), [
+                    'folder' => 'guru',
+                    'transformation' => [
+                        'quality' => 'auto',
+                        'fetch_format' => 'auto',
+                        'compression' => 'low',
+                    ],
+                ]);
             if (!$result) {
                 return redirect()->route('admin.guru.index')->with('error', 'Gagal mengunggah foto ke Cloudinary');
             }
@@ -104,6 +108,7 @@ class GuruController extends Controller
 
         $result = $guru->update($data);
         if (!$result) {
+            cloudinary()->uploadApi()->destroy($data['public_id']);
             return redirect()->route('admin.guru.index')->with('error', 'Gagal memperbarui data guru/staff');
         }
 

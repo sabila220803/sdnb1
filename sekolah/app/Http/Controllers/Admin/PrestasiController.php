@@ -3,41 +3,63 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Prestasi\StorePrestasiRequest;
+use App\Http\Requests\Prestasi\UpdatePrestasiRequest;
 use Illuminate\Http\Request;
 use App\Models\Prestasi;
 use Cloudinary;
 
 class PrestasiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $prestasis = Prestasi::orderBy('created_at', 'desc')->get();
+        $search = $request->input('search');
+
+        $prestasis = Prestasi::when($search, function ($query) use ($search) {
+            return $query
+                ->where('nama_peserta', 'like', '%' . $search . '%')
+                ->orWhere('nama_lomba', 'like', '%' . $search . '%')
+                ->orWhere('juara', 'like', '%' . $search . '%')
+                ->orWhere('tahun', 'like', '%' . $search . '%')
+                ->orWhere('tingkat', 'like', '%' . $search . '%');
+        })
+            ->orderBy('created_at', 'DESC') // Order before pagination
+            ->paginate(10); // Paginate comes last
+
         return view('admin.prestasi.index', compact('prestasis'));
     }
 
-    public function store(Request $request)
+    public function store(StorePrestasiRequest $request)
     {
-        $request->validate([
-            'nama_peserta' => 'required|string|max:255',
-            'nama_kompetisi' => 'required|string|max:255',
-            'tingkat' => 'required|string|in:Kota/Kabupaten,Provinsi,Nasional,Internasional',
-            'peringkat' => 'required|integer|min:1',
-            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
-            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
+        $data = $request->validated();
 
-        $uploadedFile = $request->file('foto');
-        $result = Cloudinary::upload($uploadedFile->getRealPath());
+        $image = cloudinary()
+            ->uploadApi()
+            ->upload($$data['foto']->getRealPath(), [
+                'folder' => 'prestasi',
+                'transformation' => [
+                    'quality' => 'auto',
+                    'fetch_format' => 'auto',
+                    'compression' => 'low',
+                ],
+            ]);
+        if (!$image) {
+            return redirect()->route('admin.prestasi.index')->with('error', 'Gagal mengunggah foto');
+        }
 
-        Prestasi::create([
-            'nama_peserta' => $request->nama_peserta,
-            'nama_kompetisi' => $request->nama_kompetisi,
-            'tingkat' => $request->tingkat,
-            'peringkat' => $request->peringkat,
-            'tahun' => $request->tahun,
-            'public_id' => $result->getPublicId(),
-            'url_file' => $result->getSecurePath()
+        $result = Prestasi::create([
+            'nama_peserta' => strtolower($data['nama_peserta']),
+            'nama_lomba' => strtolower($data['nama_lomba']),
+            'tingkat' => strtolower($data['tingkat']),
+            'juara' => $data['juara'],
+            'tahun' => $data['tahun'],
+            'public_id' => $image['public_id'],
+            'url_file' => $image['secure_url'],
         ]);
+        if (!$result) {
+            cloudinary()->uploadApi()->destroy($image['public_id']);
+            return redirect()->route('admin.prestasi.index')->with('error', 'Gagal menambahkan prestasi');
+        }
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Prestasi berhasil ditambahkan');
     }
@@ -48,40 +70,49 @@ class PrestasiController extends Controller
         return response()->json($prestasi);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePrestasiRequest $request, $id)
     {
         $prestasi = Prestasi::findOrFail($id);
 
-        $request->validate([
-            'nama_peserta' => 'required|string|max:255',
-            'nama_kompetisi' => 'required|string|max:255',
-            'tingkat' => 'required|string|in:Kota/Kabupaten,Provinsi,Nasional,Internasional',
-            'peringkat' => 'required|integer|min:1',
-            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
+        $data = $request->validated();
 
         $data = [
-            'nama_peserta' => $request->nama_peserta,
-            'nama_kompetisi' => $request->nama_kompetisi,
-            'tingkat' => $request->tingkat,
-            'peringkat' => $request->peringkat,
-            'tahun' => $request->tahun
+            'nama_peserta' => $data['nama_peserta'],
+            'nama_lomba' => $data['nama_lomba'],
+            'tingkat' => $data['tingkat'],
+            'juara' => $data['juara'],
+            'tahun' => $data['tahun'],
+            'foto' => $data['foto'] ?? '',
         ];
 
-        if ($request->hasFile('foto')) {
+        if ($data['foto']) {
             if ($prestasi->public_id) {
-                Cloudinary::destroy($prestasi->public_id);
+                cloudinary()->uploadApi()->destroy($prestasi->public_id);
             }
 
-            $uploadedFile = $request->file('foto');
-            $result = Cloudinary::upload($uploadedFile->getRealPath());
+            $image = cloudinary()
+                ->uploadApi()
+                ->upload($data['foto']->getRealPath(), [
+                    'folder' => 'prestasi',
+                    'transformation' => [
+                        'quality' => 'auto',
+                        'fetch_format' => 'auto',
+                        'compression' => 'low',
+                    ],
+                ]);
+            if (!$image) {
+                return redirect()->route('admin.prestasi.index')->with('error', 'Gagal mengunggah foto');
+            }
 
-            $data['public_id'] = $result->getPublicId();
-            $data['url_file'] = $result->getSecurePath();
+            $data['public_id'] = $image['public_id'];
+            $data['url_file'] = $image['secure_url'];
         }
 
-        $prestasi->update($data);
+        $result = $prestasi->update($data);
+        if (!$result) {
+            cloudinary()->uploadApi()->destroy($data['public_id']);
+            return redirect()->route('admin.prestasi.index')->with('error', 'Gagal memperbarui prestasi');
+        }
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Prestasi berhasil diperbarui');
     }
@@ -91,7 +122,7 @@ class PrestasiController extends Controller
         $prestasi = Prestasi::findOrFail($id);
 
         if ($prestasi->public_id) {
-            Cloudinary::destroy($prestasi->public_id);
+            cloudinary()->uploadApi()->destroy($prestasi->public_id);
         }
 
         $prestasi->delete();

@@ -43,7 +43,7 @@
                                         style="height: 200px; object-fit: contain;">
                                 @endif
                             </div>
-                            <h5 class="card-title">{{ $siswa->nama }}</h5>
+                            <h5 class="card-title">{{ ucwords($siswa->nama) }}</h5>
                         </div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                                         style="height: 200px; object-fit: contain;">
                                 @endif
                             </div>
-                            <h5 class="card-title">{{ $siswi->nama }}</h5>
+                            <h5 class="card-title">{{ ucwords($siswi->nama)}}</h5>
                         </div>
                     </div>
                 </div>

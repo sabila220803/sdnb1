@@ -14,14 +14,18 @@
     @foreach ($murids as $index => $murid)
         <tr>
             <td class="align-middle">{{ $index + 1 }}</td>
-            <td class="align-middle">{{ $murid->nama }}</td>
+            <td class="align-middle">{{ ucwords($murid->nama) }}</td>
             <td class="align-middle">{{ $murid->kelas }}</td>
             <td class="align-middle">{{ $murid->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
             <td class="align-middle">
-                <x-cloudinary::image public-id="{{ $murid->public_id }}" width="100" />
+                @if($murid->public_id)
+                <x-cloudinary::image public-id="{{ $murid->public_id }}" width="120" height="120" loading="lazy"
+                    class="claudinary" style="width: 120px; height: 120px; object-fit: cover;"
+                    alt="{{ ucwords($murid->nama) }}" />
+                @endif
             </td>
             <td class="align-middle">
-                <button class="btn btn-sm btn-warning me-2" onclick="showEditOverlay('{{ $murid->id }}')">
+                <button class="btn btn-sm btn-warning me-2" onclick="loadEditForm('{{ $murid->id }}')">
                     <i class="fas fa-edit"></i>
                 </button>
                 <button class="btn btn-sm btn-danger"
@@ -31,6 +35,15 @@
             </td>
         </tr>
     @endforeach
+@endsection
+
+@section('showing-entries')
+    Menampilkan <b>{{ $murids->firstItem() }}</b> sampai <b>{{ $murids->lastItem() }}</b> dari <b>{{ $murids->total() }}</b>
+    data
+@endsection
+
+@section('pagination')
+    {{ $murids->onEachSide(1)->links('pagination::bootstrap-4') }}
 @endsection
 
 @section('form-title', 'Tambah Murid')
@@ -117,10 +130,17 @@
 
 @push('scripts')
     <script>
-        function showEditOverlay(id) {
-            // Fetch murid data and populate form
-            fetch(`/admin/murid/${id}/edit`)
-                .then(response => response.json())
+        function loadEditForm(id) {
+            fetch(`/admin/murid/${id}/edit`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
                 .then(data => {
                     document.getElementById('edit_nama').value = data.nama;
                     document.getElementById('edit_kelas').value = data.kelas;
@@ -129,8 +149,16 @@
                     } else {
                         document.getElementById('edit_jenis_kelamin_p').checked = true;
                     }
-                    document.querySelector('#editOverlay form').action = `/admin/murid/${id}`;
+                    document.getElementById('editForm').action = `/admin/murid/${id}`;
                     showEditOverlay();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Gagal memuat data',
+                        icon: 'error'
+                    });
                 });
         }
     </script>
