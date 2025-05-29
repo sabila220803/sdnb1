@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-5 pt-5">
+<div class="container my-5 py-5">
     <h2 class="text-center mb-4">Galeri Foto</h2>
     <div class="row g-4">
         <!-- Foto 1 -->

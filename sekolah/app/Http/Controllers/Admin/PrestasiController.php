@@ -72,10 +72,13 @@ class PrestasiController extends Controller
 
     public function update(UpdatePrestasiRequest $request, $id)
     {
-        $prestasi = Prestasi::findOrFail($id);
-
         $data = $request->validated();
 
+        $prestasi = Prestasi::findOrFail($id);
+        if (!$prestasi) {
+            return redirect()->route('admin.prestasi.index')->with('error', 'Prestasi tidak ditemukan');
+        }
+        
         $data = [
             'nama_peserta' => $data['nama_peserta'],
             'nama_lomba' => $data['nama_lomba'],
@@ -87,7 +90,10 @@ class PrestasiController extends Controller
 
         if ($data['foto']) {
             if ($prestasi->public_id) {
-                cloudinary()->uploadApi()->destroy($prestasi->public_id);
+                $result = cloudinary()->uploadApi()->destroy($prestasi->public_id);
+                if (!$result) {
+                    return redirect()->route('admin.prestasi.index')->with('error', 'Gagal menghapus foto dari Cloudinary');
+                }
             }
 
             $image = cloudinary()
@@ -120,12 +126,21 @@ class PrestasiController extends Controller
     public function destroy($id)
     {
         $prestasi = Prestasi::findOrFail($id);
-
-        if ($prestasi->public_id) {
-            cloudinary()->uploadApi()->destroy($prestasi->public_id);
+        if (!$prestasi) {
+            return redirect()->route('admin.prestasi.index')->with('error', 'Prestasi tidak ditemukan');
         }
 
-        $prestasi->delete();
+        if ($prestasi->public_id) {
+            $result = cloudinary()->uploadApi()->destroy($prestasi->public_id);
+            if (!$result) {
+                return redirect()->route('admin.prestasi.index')->with('error', 'Gagal menghapus foto dari Cloudinary');
+            }
+        }
+
+        $result = $prestasi->delete();
+        if (!$result) {
+            return redirect()->route('admin.prestasi.index')->with('error', 'Gagal menghapus prestasi');
+        }
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Prestasi berhasil dihapus');
     }

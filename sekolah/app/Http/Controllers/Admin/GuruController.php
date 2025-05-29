@@ -69,9 +69,12 @@ class GuruController extends Controller
 
     public function update(UpdateGuruRequest $request, $id)
     {
-        $guru = Guru::findOrFail($id);
-
         $data = $request->validated();
+
+        $guru = Guru::findOrFail($id);
+        if(!$guru){
+            return redirect()->route('admin.guru.index')->with('error', 'Data guru/staff tidak ditemukan');
+        }
 
         $data = [
             'nama' => strtolower($data['nama']),
@@ -87,10 +90,9 @@ class GuruController extends Controller
                 }
             }
 
-            $uploadedFile = $data['foto'];
-            $result = cloudinary()
+            $image = cloudinary()
                 ->uploadApi()
-                ->upload($uploadedFile->getRealPath(), [
+                ->upload($data['foto']->getRealPath(), [
                     'folder' => 'guru',
                     'transformation' => [
                         'quality' => 'auto',
@@ -98,17 +100,17 @@ class GuruController extends Controller
                         'compression' => 'low',
                     ],
                 ]);
-            if (!$result) {
+            if (!$image) {
                 return redirect()->route('admin.guru.index')->with('error', 'Gagal mengunggah foto ke Cloudinary');
             }
 
-            $data['public_id'] = $result['public_id'];
-            $data['url_file'] = $result['secure_url'];
+            $data['public_id'] = $image['public_id'];
+            $data['url_file'] = $image['secure_url'];
         }
 
         $result = $guru->update($data);
         if (!$result) {
-            cloudinary()->uploadApi()->destroy($data['public_id']);
+            cloudinary()->uploadApi()->destroy($image['public_id']);
             return redirect()->route('admin.guru.index')->with('error', 'Gagal memperbarui data guru/staff');
         }
 
@@ -118,6 +120,9 @@ class GuruController extends Controller
     public function destroy($id)
     {
         $guru = Guru::findOrFail($id);
+        if (!$guru) {
+            return redirect()->route('admin.guru.index')->with('error', 'Data guru/staff tidak ditemukan');
+        }
 
         if ($guru->public_id) {
             $result = cloudinary()->uploadApi()->destroy($guru->public_id);

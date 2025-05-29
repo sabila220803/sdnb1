@@ -14,5 +14,7 @@ class KalenderPendidikan extends Model
     protected $fillable = [
         'nama',
         'jenis',
+        'public_id',
+        'url_file',
     ];
 }

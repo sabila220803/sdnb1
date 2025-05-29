@@ -67,9 +67,12 @@ class MuridController extends Controller
 
     public function update(MuridRequest $request, $id)
     {
-        $murid = Murid::findOrFail($id);
-
         $data = $request->validated();
+
+        $murid = Murid::findOrFail($id);
+        if(!$murid) {
+            return redirect()->route('admin.murid.index')->with('error', 'Murid tidak ditemukan');
+        }
 
         $data = [
             'nama' => strtolower($data['nama']),
@@ -80,10 +83,13 @@ class MuridController extends Controller
 
         if ($data['foto'] != null) {
             if ($murid->public_id) {
-                cloudinary()->uploadApi()->destroy($murid->public_id);
+                $result = cloudinary()->uploadApi()->destroy($murid->public_id);
+                if (!$result) {
+                    return redirect()->route('admin.murid.index')->with('error', 'Gagal menghapus foto dari Cloudinary');
+                }
             }
 
-            $result = cloudinary()
+            $image = cloudinary()
                 ->uploadApi()
                 ->upload($data['foto']->getRealPath(), [
                     'folder' => 'pesertaDidik',
@@ -94,13 +100,13 @@ class MuridController extends Controller
                     ],
                 ]);
 
-            $data['public_id'] = $result['public_id'];
-            $data['url_file'] = $result['secure_url'];
+            $data['public_id'] = $image['public_id'];
+            $data['url_file'] = $image['secure_url'];
         }
 
         $result = $murid->update($data);
         if (!$result) {
-            cloudinary()->uploadApi()->destroy($data['public_id']);
+            cloudinary()->uploadApi()->destroy($image['public_id']);
             return redirect()->route('admin.murid.index')->with('error', 'Gagal memperbarui data murid');
         }
 
@@ -110,12 +116,21 @@ class MuridController extends Controller
     public function destroy($id)
     {
         $murid = Murid::findOrFail($id);
-
-        if ($murid->public_id) {
-            cloudinary()->uploadApi()->destroy($murid->public_id);
+        if (!$murid) {
+            return redirect()->route('admin.murid.index')->with('error', 'Murid tidak ditemukan');
         }
 
-        $murid->delete();
+        if ($murid->public_id) {
+            $result = cloudinary()->uploadApi()->destroy($murid->public_id);
+            if (!$result) {
+                return redirect()->route('admin.murid.index')->with('error', 'Gagal menghapus foto dari Cloudinary');
+            }
+        }
+
+        $result = $murid->delete();
+        if (!$result) {
+            return redirect()->route('admin.murid.index')->with('error', 'Gagal menghapus data murid');
+        }
 
         return redirect()->route('admin.murid.index')->with('success', 'Data murid berhasil dihapus');
     }

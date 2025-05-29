@@ -84,7 +84,7 @@
         <div class="card shadow-lg border-0" style="border-radius: 15px;">
             <div class="card-header d-flex justify-content-between align-items-center py-3"
                 style="background-color: #3970be;">
-                <h3 class="mb-0 text-white fw-bold">@yield('title')</h3>
+                <h3 class="ps-3 mb-0 text-white fw-bold">@yield('title')</h3>
                 <div class="d-flex align-items-center">
                     <form method="GET" action="@yield('search-action')" class="me-3">
                         <div class="input-group">

@@ -7,7 +7,7 @@
                 <div class="card shadow-lg border-0" style="border-radius: 15px; overflow: hidden;">
                     <div class="card-header d-flex justify-content-between align-items-center py-3"
                         style="background-color: #3970be;">
-                        <h3 class="mb-0 text-white fw-bold">Dashboard Admin</h3>
+                        <h3 class="ps-2 mb-0 text-white fw-bold">Dashboard Admin</h3>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-light btn-sm">
@@ -55,7 +55,7 @@
                                             <i class="fas fa-images fa-2x text-warning"></i>
                                         </div>
                                         <h5 class="card-title">Kelola Galeri</h5>
-                                        <p class="card-text">Tambah, edit, dan hapus foto dan video</p>
+                                        <p class="card-text">Tambah, edit, dan hapus foto</p>
                                         <a href="{{ route('admin.gallery.index') }}"
                                             class="btn btn-warning mt-2 text-white">Akses</a>
                                     </div>
