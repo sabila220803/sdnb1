@@ -10,6 +10,7 @@ use App\Http\Controllers\LombaController;
 use App\Http\Controllers\KontakController;
 use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\KurikulumController;
+use App\Http\Controllers\BeritaDetailController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\PrestasiController;
@@ -23,6 +24,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Route untuk halaman berita
 Route::get('/berita', [NewsController::class, 'index'])->name('berita.index');
+Route::get('/berita/{id}', [BeritaDetailController::class, 'show'])->name('berita.detail');
 
 // Route untuk halaman profil
 Route::get('/profil/sejarah', [ProfilController::class, 'sejarah'])->name('profil.sejarah');

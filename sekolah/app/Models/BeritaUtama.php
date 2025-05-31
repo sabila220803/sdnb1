@@ -8,28 +8,25 @@ class BeritaUtama
     {
         return [
             [
-                'judul' => 'PSAJ Bahasa Arab dan Kemuhammadiyahan',
+                'id' => 0,
+                'judul' => 'Tujuh Kunci Sukses Sekolah Berkemajuan',
                 'tanggal' => '9 Mei 2025',
                 'gambar' => 'images/berita/berita1.jpg',
-                'link' => '#'
+                'link' => route('berita.detail', 0)
             ],
             [
+                'id' => 1,
                 'judul' => 'Prestasi Gemilang di Olimpiade Sains',
                 'tanggal' => '8 Mei 2025',
                 'gambar' => 'images/berita/berita1.jpg',
-                'link' => '#'
+                'link' => route('berita.detail', 1)
             ],
             [
+                'id' => 2,
                 'judul' => 'Perayaan Hari Kartini yang Meriah',
                 'tanggal' => '7 Mei 2025',
                 'gambar' => 'images/berita/berita1.jpg',
-                'link' => '#'
-            ],
-            [
-                'judul' => 'Prestasi Gemilang di Olimpiade Sains',
-                'tanggal' => '8 Mei 2025',
-                'gambar' => 'images/berita/berita1.jpg',
-                'link' => '#'
+                'link' => route('berita.detail', 2)
             ]
         ];
     }
