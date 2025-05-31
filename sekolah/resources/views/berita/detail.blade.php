@@ -9,7 +9,7 @@
                     <span class="berita-detail-date">{{ $news->created_at->format('d M Y') }}</span>
                     <span class="berita-detail-divider">|</span>
                     <span
-                        class="berita-detail-author">{{ preg_replace_callback('/(?:^|[.,!?]\s*|\s+)\w/i',function ($matches) {return strtoupper($matches[0]);},strtolower($item->penerbit)) }}</span>
+                        class="berita-detail-author">{{ preg_replace_callback('/(?:^|[.,!?]\s*|\s+)\w/i',function ($matches) {return strtoupper($matches[0]);},strtolower($news->penerbit)) }}</span>
                 </div>
             </div>
 
