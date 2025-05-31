@@ -4,21 +4,25 @@
 <div class="berita-detail-section">
     <div class="container py-5">
         <div class="berita-detail-header mb-4">
-            <h1 class="berita-detail-title">{{ $berita['judul'] }}</h1>
+            <h1 class="berita-detail-title">{{ ucwords($news->judul) }}</h1>
             <div class="berita-detail-meta">
-                <span class="berita-detail-date">{{ $berita['tanggal'] }}</span>
+                <span class="berita-detail-date">{{ $news->created_at->format('d M Y') }}</span>
                 <span class="berita-detail-divider">|</span>
-                <span class="berita-detail-author">Admin SDN Bandarharjo 1</span>
+                <span class="berita-detail-author">{{ $news->penerbit }}</span>
             </div>
         </div>
         
         <div class="berita-detail-content">
             <div class="berita-detail-image mb-4">
-                <img src="{{ asset($berita['gambar']) }}" alt="{{ $berita['judul'] }}" class="img-fluid rounded">
+                <x-cloudinary::image public-id="{{ $news->public_id }}"
+                                alt="News {{ ucwords($news->judul) }}"
+                                transformation="c_fill,h_200,w_223,g_face,q_auto" loading="lazy"
+                                class="img-fluid rounded mx-auto d-block"
+                                style="width: 223px; height: 200px; object-fit: cover; display: block;" />
             </div>
             
             <div class="berita-detail-text">
-                {!! $berita['konten'] !!}
+                {!! $news->deskripsi !!}
             </div>
         </div>
         

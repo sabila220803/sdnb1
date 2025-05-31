@@ -10,7 +10,7 @@
 
         .news {
             width: 350px;
-            height: 350px;
+            height: 200px;
             object-fit: cover;
         }
 
@@ -171,8 +171,7 @@
                 @foreach ($news as $item)
                     <div class="berita-item" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                         <div class="berita-image">
-                            <x-cloudinary::image public-id="{{ $item->public_id }}"
-                                alt="News {{ ucwords($item->judul) }}"
+                            <x-cloudinary::image public-id="{{ $item->public_id }}" alt="News {{ ucwords($item->judul) }}"
                                 transformation="c_fill,h_200,w_223,g_face,q_auto" loading="lazy"
                                 class="news img-fluid rounded mx-auto d-block"
                                 style="width: 223px; height: 200px; object-fit: cover; display: block;" />
@@ -180,7 +179,7 @@
                         <div class="berita-content">
                             <div class="berita-date">{{ $item->created_at->format('d M Y') }}</div>
                             <h3 class="berita-heading">{{ ucwords($item->judul) }}</h3>
-                            <a href="#" class="btn btn-primary">Baca Selengkapnya</a>
+                            <a href="{{ route('berita.show', $item->id) }}" class="btn btn-primary">Baca Selengkapnya</a>
                             {{-- <a href="{{ $item['link'] }}" class="btn btn-primary">Baca more</a> --}}
                         </div>
                     </div>

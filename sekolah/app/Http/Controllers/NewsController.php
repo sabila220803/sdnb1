@@ -8,15 +8,23 @@ use App\Models\Berita as News;
 
 class NewsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $news = News::latest()->paginate(10);
+        $search = $request->input('search');
+
+        $news = News::when($search, function ($query) use ($search) {
+            return $query->where('judul', 'like', '%' . $search . '%')
+                ->orWhere('penerbit', 'like', '%' . $search);
+        })
+            ->orderBy('created_at', 'DESC') // Order before pagination
+            ->paginate(10); // Paginate comes last
+
         return view('berita.berita', compact('news'));
     }
     
     public function show($id)
     {
         $news = News::findOrFail($id);
-        return view('berita.show', compact('news'));
+        return view('berita.detail', compact('news'));
     }
 }
