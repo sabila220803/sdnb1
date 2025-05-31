@@ -10,6 +10,7 @@ use App\Http\Controllers\LombaController;
 use App\Http\Controllers\KontakController;
 use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\KurikulumController;
+use App\Http\Controllers\BeritaDetailController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\PrestasiController;
