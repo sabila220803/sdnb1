@@ -13,11 +13,10 @@ class NewsController extends Controller
         $search = $request->input('search');
 
         $news = News::when($search, function ($query) use ($search) {
-            return $query->where('judul', 'like', '%' . $search . '%')
-                ->orWhere('penerbit', 'like', '%' . $search);
+            return $query->where('judul', 'like', '%' . $search . '%');
         })
             ->orderBy('created_at', 'DESC') // Order before pagination
-            ->paginate(10); // Paginate comes last
+            ->paginate(9); // Paginate comes last
 
         return view('berita.berita', compact('news'));
     }
