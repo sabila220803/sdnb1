@@ -2,49 +2,56 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Kurikulum;
-use Cloudinary;
+use App\Http\Controllers\Controller;
+use App\Models\KalenderPendidikan as Kurikulum;
+use App\Http\Requests\KalenderPendidikan\StoreRequest;
+use App\Http\Requests\KalenderPendidikan\UpdateRequest;
+use Illuminate\Contracts\Cache\Store;
 
 class KurikulumController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kurikulums = Kurikulum::orderBy('created_at', 'desc')->get();
+        $search = $request->input('search');
+
+        $kurikulums = Kurikulum::when($search, function ($query) use ($search) {
+            return $query->where('nama', 'like', '%' . $search . '%')
+                ->orWhere('jenis', 'like', '%' . $search);
+        })
+            ->orderBy('created_at', 'DESC') // Order before pagination
+            ->paginate(10); // Paginate comes last
+
         return view('admin.kurikulum.index', compact('kurikulums'));
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'jenis' => 'required|string|in:Kalender Akademik,Jadwal Pelajaran,Silabus,RPP,Materi Pembelajaran,Dokumen Lainnya',
-            'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240',
-            'deskripsi' => 'nullable|string'
+        $data = $request->validated();
+
+        $file = Cloudinary()->uploadApi()->upload($data['file']->getRealPath(), [
+            'folder' => 'KalenderPendidikan',
+            'resource_type' => 'raw'
         ]);
-
-        $uploadedFile = $request->file('file');
-        $options = [];
-
-        // Jika file adalah gambar, upload sebagai image
-        if (in_array($uploadedFile->getClientOriginalExtension(), ['jpg', 'jpeg', 'png'])) {
-            $options['resource_type'] = 'image';
-        } else {
-            $options['resource_type'] = 'raw';
+        if (!$file) {
+            return redirect()->back()->with('error', 'Gagal mengunggah file ke Cloudinary');
         }
 
-        $result = Cloudinary::upload($uploadedFile->getRealPath(), $options);
-
-        Kurikulum::create([
-            'nama' => $request->nama,
-            'jenis' => $request->jenis,
-            'deskripsi' => $request->deskripsi,
-            'public_id' => $result->getPublicId(),
-            'url_file' => $result->getSecurePath()
+        $result = Kurikulum::create([
+            'nama' => strtolower($data['nama']),
+            'jenis' => $data['jenis'],
+            'public_id' => $file['public_id'],
+            'url_file' => $file['secure_url'],
+            'tahun_ajaran' => $data['tahun_ajaran_1'] . '/' . $data['tahun_ajaran_2']
         ]);
+        if (!$result) {
+            cloudinary()->uploadApi()->destroy($file['public_id'], [
+                'resource_type' => 'raw'
+            ]);
+            return redirect()->back()->with('error', 'Gagal menyimpan data Kalender Pendidikan');
+        }
 
-        return redirect()->route('admin.kurikulum.index')->with('success', 'Dokumen kurikulum berhasil ditambahkan');
+        return redirect()->route('admin.kurikulum.index')->with('success', 'Dokumen Kalender Pendidikan berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -53,52 +60,49 @@ class KurikulumController extends Controller
         return response()->json($kurikulum);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
+        $data = $request->validated();
+
+        $data['nama'] = strtolower($data['nama']);
+        $data['tahun_ajaran'] = $data['tahun_ajaran_1'] . '/' . $data['tahun_ajaran_2'];
+        unset($data['tahun_ajaran_1'], $data['tahun_ajaran_2']);
+        $data['file'] = $data['file'] ?? '';
+
         $kurikulum = Kurikulum::findOrFail($id);
 
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'jenis' => 'required|string|in:Kalender Akademik,Jadwal Pelajaran,Silabus,RPP,Materi Pembelajaran,Dokumen Lainnya',
-            'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240',
-            'deskripsi' => 'nullable|string'
-        ]);
-
-        $data = [
-            'nama' => $request->nama,
-            'jenis' => $request->jenis,
-            'deskripsi' => $request->deskripsi
-        ];
-
-        if ($request->hasFile('file')) {
+        if ($data['file']) {
             if ($kurikulum->public_id) {
-                // Tentukan resource_type berdasarkan ekstensi file yang ada
-                $resourceType = in_array(pathinfo($kurikulum->url_file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png'])
-                    ? 'image'
-                    : 'raw';
-
-                Cloudinary::destroy($kurikulum->public_id, ['resource_type' => $resourceType]);
+                $result = cloudinary()->uploadApi()->destroy($kurikulum->public_id, [
+                    'resource_type' => 'raw'
+                ]);
+                if (!$result) {
+                    return redirect()->back()->with('error', 'Gagal menghapus file lama dari Cloudinary');
+                }
             }
 
-            $uploadedFile = $request->file('file');
-            $options = [];
+            $file = cloudinary()->uploadApi()->upload($data['file']->getRealPath(), [
+                'folder' => 'KalenderPendidikan',
+                'resource_type' => 'raw'
+            ]);
 
-            // Tentukan resource_type berdasarkan ekstensi file baru
-            if (in_array($uploadedFile->getClientOriginalExtension(), ['jpg', 'jpeg', 'png'])) {
-                $options['resource_type'] = 'image';
-            } else {
-                $options['resource_type'] = 'raw';
+            if (!$file) {
+                return redirect()->back()->with('error', 'Gagal mengunggah file baru ke Cloudinary');
             }
 
-            $result = Cloudinary::upload($uploadedFile->getRealPath(), $options);
-
-            $data['public_id'] = $result->getPublicId();
-            $data['url_file'] = $result->getSecurePath();
+            $data['public_id'] = $file['public_id'];
+            $data['url_file'] = $file['secure_url'];
         }
 
-        $kurikulum->update($data);
+        $result = $kurikulum->update($data);
+        if (!$result) {
+            cloudinary()->uploadApi()->destroy($file['public_id'], [
+                'resource_type' => 'raw'
+            ]);
+            return redirect()->back()->with('error', 'Gagal memperbarui data Kalender Pendidikan');
+        }
 
-        return redirect()->route('admin.kurikulum.index')->with('success', 'Dokumen kurikulum berhasil diperbarui');
+        return redirect()->route('admin.kurikulum.index')->with('success', 'Dokumen Kalender Pendidikan berhasil diperbarui');
     }
 
     public function destroy($id)
@@ -106,16 +110,19 @@ class KurikulumController extends Controller
         $kurikulum = Kurikulum::findOrFail($id);
 
         if ($kurikulum->public_id) {
-            // Tentukan resource_type berdasarkan ekstensi file
-            $resourceType = in_array(pathinfo($kurikulum->url_file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png'])
-                ? 'image'
-                : 'raw';
-
-            Cloudinary::destroy($kurikulum->public_id, ['resource_type' => $resourceType]);
+            $file = cloudinary()->uploadApi()->destroy($kurikulum->public_id, [
+                'resource_type' => 'raw',
+            ]);
+            if (!$file) {
+                return redirect()->back()->with('error', 'Gagal menghapus file dari Cloudinary');
+            }
         }
 
-        $kurikulum->delete();
+        $result = $kurikulum->delete();
+        if (!$result) {
+            return redirect()->back()->with('error', 'Gagal menghapus data Kalender Pendidikan');
+        }
 
-        return redirect()->route('admin.kurikulum.index')->with('success', 'Dokumen kurikulum berhasil dihapus');
+        return redirect()->route('admin.kurikulum.index')->with('success', 'Dokumen kalender pendidikan berhasil dihapus');
     }
 }

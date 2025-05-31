@@ -53,6 +53,7 @@ Route::post('/hubungi-kami/kritik-saran', [KritikSaranController::class, 'store'
 Route::get('/kurrikulum/sekolah', [KurikulumController::class, 'sekolah'])->name('kurikulum.sekolah');
 Route::get('/kurrikulum/kalender', [KurikulumController::class, 'kalender'])->name('kurikulum.kalender');
 Route::get('/kurrikulum/video', [KurikulumController::class, 'video'])->name('kurikulum.video');
+Route::get('/kurikulum/download/{id}', [KurikulumController::class, 'download'])->name('kurikulum.download');
 
 // Route untuk autentikasi
 Route::get('/login', [AuthController::class, 'index'])->name('login');
@@ -107,4 +108,5 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/kurikulum/{id}/edit', [AdminKurikulumController::class, 'edit'])->name('kurikulum.edit');
     Route::put('/kurikulum/{id}', [AdminKurikulumController::class, 'update'])->name('kurikulum.update');
     Route::delete('/kurikulum/{id}', [AdminKurikulumController::class, 'destroy'])->name('kurikulum.delete');
+    Route::get('/kurikulum/download/{id}', [KurikulumController::class, 'download'])->name('kurikulum.download');
 });

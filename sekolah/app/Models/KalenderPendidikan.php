@@ -16,5 +16,6 @@ class KalenderPendidikan extends Model
         'jenis',
         'public_id',
         'url_file',
+        'tahun_ajaran'
     ];
 }

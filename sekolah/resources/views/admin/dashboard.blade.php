@@ -97,8 +97,8 @@
                                         <div class="rounded-circle bg-info bg-opacity-10 p-3 d-inline-flex mb-3">
                                             <i class="fas fa-calendar-alt fa-2x text-info"></i>
                                         </div>
-                                        <h5 class="card-title">Kelola Kurikulum</h5>
-                                        <p class="card-text">Tambah, edit, dan hapus informasi kurikulum</p>
+                                        <h5 class="card-title">Kelola Kalender Pendidikan</h5>
+                                        <p class="card-text">Tambah, edit, dan hapus Kalender Pendidikan</p>
                                         <a href="{{ route('admin.kurikulum.index') }}" class="btn btn-info mt-2">Akses</a>
                                     </div>
                                 </div>

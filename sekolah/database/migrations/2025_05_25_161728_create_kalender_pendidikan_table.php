@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('jenis');
+            $table->string('tahun_ajaran');
             $table->string('public_id');
             $table->string('url_file');
             $table->timestamps();
