@@ -18,10 +18,10 @@
             <td class="align-middle">{{ $murid->kelas }}</td>
             <td class="align-middle">{{ $murid->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
             <td class="align-middle">
-                @if($murid->public_id)
-                <x-cloudinary::image public-id="{{ $murid->public_id }}" width="120" height="120" loading="lazy"
-                    class="claudinary" style="width: 120px; height: 120px; object-fit: cover;"
-                    alt="{{ ucwords($murid->nama) }}" />
+                @if ($murid->public_id)
+                    <x-cloudinary::image public-id="{{ $murid->public_id }}" width="120" height="120" loading="lazy"
+                        class="claudinary" style="width: 120px; height: 120px; object-fit: cover;"
+                        alt="{{ ucwords($murid->nama) }}" />
                 @endif
             </td>
             <td class="align-middle">
@@ -38,7 +38,8 @@
 @endsection
 
 @section('showing-entries')
-    Menampilkan <b>{{ $murids->firstItem() }}</b> sampai <b>{{ $murids->lastItem() }}</b> dari <b>{{ $murids->total() }}</b>
+    Menampilkan <b>{{ $murids->firstItem() }}</b> sampai <b>{{ $murids->lastItem() }}</b> dari
+    <b>{{ $murids->total() }}</b>
     data
 @endsection
 
@@ -116,8 +117,8 @@
                 <label class="form-check-label" for="edit_jenis_kelamin_l">Laki-laki</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="jenis_kelamin" id="edit_jenis_kelamin_p" value="P"
-                    required>
+                <input class="form-check-input" type="radio" name="jenis_kelamin" id="edit_jenis_kelamin_p"
+                    value="P" required>
                 <label class="form-check-label" for="edit_jenis_kelamin_p">Perempuan</label>
             </div>
         </div>

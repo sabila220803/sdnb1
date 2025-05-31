@@ -110,7 +110,9 @@ class GuruController extends Controller
 
         $result = $guru->update($data);
         if (!$result) {
-            cloudinary()->uploadApi()->destroy($image['public_id']);
+            if (isset($data['public_id'])) {
+                cloudinary()->uploadApi()->destroy($data['public_id']);
+            }
             return redirect()->route('admin.guru.index')->with('error', 'Gagal memperbarui data guru/staff');
         }
 

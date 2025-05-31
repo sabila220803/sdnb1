@@ -8,6 +8,12 @@
             object-fit: cover;
         }
 
+        .news {
+            width: 350px;
+            height: 350px;
+            object-fit: cover;
+        }
+
         .prestasi-carousel {
             overflow: hidden;
             padding: 0 50px;
@@ -62,8 +68,7 @@
                         <x-cloudinary::image public-id="{{ $kepalaSekolah->public_id }}" width="120" height="120"
                             loading="lazy" class="kepsek-img" style="width: 120px; height: 120px; object-fit: cover;" />
                     @else
-                        <img src="{{ asset('images/kepsek.png')}}" alt="Kepala Sekolah"
-                            class="kepsek-img">
+                        <img src="{{ asset('images/kepsek.png') }}" alt="Kepala Sekolah" class="kepsek-img">
                     @endif
                     <div class="kepsek-info text-center mt-3">
                         <h4 class="mb-0">SD Negeri Bandarharjo 1</h4>
@@ -149,12 +154,16 @@
                         </div>
                     @endforeach
                 </div>
-                <button class="prestasi-prev position-absolute top-50 start-0 translate-middle-y btn btn-primary rounded-circle" style="z-index: 10; width: 40px; height: 40px; padding: 0;">❮</button>
-                <button class="prestasi-next position-absolute top-50 end-0 translate-middle-y btn btn-primary rounded-circle" style="z-index: 10; width: 40px; height: 40px; padding: 0;">❯</button>
+                <button
+                    class="prestasi-prev position-absolute top-50 start-0 translate-middle-y btn btn-primary rounded-circle"
+                    style="z-index: 10; width: 40px; height: 40px; padding: 0;">❮</button>
+                <button
+                    class="prestasi-next position-absolute top-50 end-0 translate-middle-y btn btn-primary rounded-circle"
+                    style="z-index: 10; width: 40px; height: 40px; padding: 0;">❯</button>
             </div>
         </div>
     </div>
-    
+
     <div class="berita-section">
         <div class="container py-5">
             <h2 class="berita-title text-center mb-5" data-aos="fade-up">Berita</h2>
@@ -162,19 +171,23 @@
                 @foreach ($news as $item)
                     <div class="berita-item" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                         <div class="berita-image">
-                            <img src="{{ asset($item['gambar']) }}" alt="{{ $item['judul'] }}">
+                            <x-cloudinary::image public-id="{{ $item->public_id }}"
+                                alt="News {{ ucwords($item->judul) }}"
+                                transformation="c_fill,h_200,w_223,g_face,q_auto" loading="lazy"
+                                class="news img-fluid rounded mx-auto d-block"
+                                style="width: 223px; height: 200px; object-fit: cover; display: block;" />
                         </div>
                         <div class="berita-content">
-                            <div class="berita-date">{{ $item['tanggal'] }}</div>
-                            <h3 class="berita-heading">{{ $item['judul'] }}</h3>
-                            <a href="{{ $item['link'] }}" class="btn btn-primary">Baca Selengkapnya</a>
+                            <div class="berita-date">{{ $item->created_at->format('d M Y') }}</div>
+                            <h3 class="berita-heading">{{ ucwords($item->judul) }}</h3>
+                            <a href="#" class="btn btn-primary">Baca Selengkapnya</a>
                             {{-- <a href="{{ $item['link'] }}" class="btn btn-primary">Baca more</a> --}}
                         </div>
                     </div>
                 @endforeach
             </div>
             <div class="text-center mt-4">
-                <a href="{{ route('berita.index') }}" class="btn btn-outline-primary btn-lg">Berita Lainnya !!!</a>
+                <a href="{{ route('berita.index') }}" class="btn btn-outline-primary btn-lg">Berita Lainnya</a>
             </div>
         </div>
     </div>

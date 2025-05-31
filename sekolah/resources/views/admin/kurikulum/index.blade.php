@@ -105,57 +105,57 @@
                 style="text-align: padding-left: 0; border-radius: 6px;"
                 oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
         </div>
-@endsection
+    @endsection
 
 
-@push('scripts')
-    <script>
-        function loadEditForm(id) {
-            fetch(`/admin/kurikulum/${id}/edit`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    document.getElementById('edit_nama').value = data.nama;
-                    document.getElementById('edit_jenis').value = data.jenis;
-                    let tahunAjaran = data.tahun_ajaran.split('/');
-                    document.getElementById('edit_tahun_ajaran_1').value = `${tahunAjaran[0]}`;
-                    document.getElementById('edit_tahun_ajaran_2').value = `${tahunAjaran[1]}`;
-                    document.getElementById('editForm').action = `/admin/kurikulum/${id}`;
-                    showEditOverlay();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Gagal memuat data',
-                        icon: 'error'
+    @push('scripts')
+        <script>
+            function loadEditForm(id) {
+                fetch(`/admin/kurikulum/${id}/edit`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById('edit_nama').value = data.nama;
+                        document.getElementById('edit_jenis').value = data.jenis;
+                        let tahunAjaran = data.tahun_ajaran.split('/');
+                        document.getElementById('edit_tahun_ajaran_1').value = `${tahunAjaran[0]}`;
+                        document.getElementById('edit_tahun_ajaran_2').value = `${tahunAjaran[1]}`;
+                        document.getElementById('editForm').action = `/admin/kurikulum/${id}`;
+                        showEditOverlay();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Gagal memuat data',
+                            icon: 'error'
+                        });
                     });
-                });
-        }
-
-        // Event listener untuk input pertama
-        document.getElementById('tahun_ajaran_1').addEventListener('input', function(e) {
-            let value = this.value.replace(/[^0-9]/g, '');
-            if (value.length >= 2) {
-                this.value = value.substring(0, 2);
-                document.getElementById('tahun_ajaran_2').focus();
             }
-        });
 
-        // Event listener untuk input kedua
-        document.getElementById('tahun_ajaran_2').addEventListener('input', function(e) {
-            let value = this.value.replace(/[^0-9]/g, '');
-            if (value.length >= 2) {
-                this.value = value.substring(0, 2);
-                this.blur();
-            }
-        });
-    </script>
-@endpush
+            // Event listener untuk input pertama
+            document.getElementById('tahun_ajaran_1').addEventListener('input', function(e) {
+                let value = this.value.replace(/[^0-9]/g, '');
+                if (value.length >= 2) {
+                    this.value = value.substring(0, 2);
+                    document.getElementById('tahun_ajaran_2').focus();
+                }
+            });
+
+            // Event listener untuk input kedua
+            document.getElementById('tahun_ajaran_2').addEventListener('input', function(e) {
+                let value = this.value.replace(/[^0-9]/g, '');
+                if (value.length >= 2) {
+                    this.value = value.substring(0, 2);
+                    this.blur();
+                }
+            });
+        </script>
+    @endpush

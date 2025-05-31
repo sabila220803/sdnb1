@@ -27,7 +27,8 @@
                                 </div>
                             @empty
                                 <div class="text-center p-4">
-                                    <p class="text-light-muted h4 fw-bold opacity-50">Tidak ada kalender pendidikan yang tersedia.</p>
+                                    <p class="text-light-muted h4 fw-bold opacity-50">Tidak ada kalender pendidikan yang
+                                        tersedia.</p>
                             @endforelse
                         </div>
                     </div>
@@ -45,7 +46,6 @@
                             <i class="fas fa-school fa-2x me-3" style="color: #3970BE;"></i>
                             <h2 class="text-center m-0" style="color: #3970BE;">KALDIK SDN BANDARHARJO 01</h2>
                         </div>
-
                         <div class="list-group">
                             @forelse ($kalenders->where('jenis', 'Kaldik SDN Bandarharjo 01') as $kalender)
                                 <div
@@ -62,7 +62,8 @@
                                 </div>
                             @empty
                                 <div class="text-center p-4">
-                                    <p class="text-light-muted h4 fw-bold opacity-50">Tidak ada kalender pendidikan yang tersedia.</p>
+                                    <p class="text-light-muted h4 fw-bold opacity-50">Tidak ada kalender pendidikan yang
+                                        tersedia.</p>
                                 </div>
                             @endforelse
                         </div>

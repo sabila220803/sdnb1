@@ -28,31 +28,39 @@ class MuridController extends Controller
     public function store(MuridRequest $request)
     {
         $data = $request->validated();
-
-        $result = cloudinary()
-            ->uploadApi()
-            ->upload($data['foto']->getRealPath(), [
-                'folder' => 'pesertaDidik',
-                'transformation' => [
-                    'quality' => 'auto',
-                    'fetch_format' => 'auto',
-                    'compression' => 'low',
-                ],
-            ]);
-        if (!$result) {
-            return redirect()->route('admin.murid.index')->with('error', 'Gagal mengunggah foto');
-        }
-
-        $murid = Murid::create([
+        
+        $data = [
             'nama' => strtolower($data['nama']),
             'kelas' => $data['kelas'],
             'jenis_kelamin' => $data['jenis_kelamin'],
-            'public_id' => $result['public_id'],
-            'url_file' => $result['secure_url'],
-        ]);
+            'foto' => $data['foto'] ?? '',
+        ];
+
+        if($data !=null){
+            $result = cloudinary()
+                ->uploadApi()
+                ->upload($data['foto']->getRealPath(), [
+                    'folder' => 'pesertaDidik',
+                    'transformation' => [
+                        'quality' => 'auto',
+                        'fetch_format' => 'auto',
+                        'compression' => 'low',
+                    ],
+                ]);
+            if (!$result) {
+                return redirect()->route('admin.murid.index')->with('error', 'Gagal mengunggah foto');
+            }
+            $data['public_id'] = $result['public_id'];
+            $data['url_file'] = $result['secure_url'];
+        }
+
+        $murid = Murid::create($data);
 
         if (!$murid) {
-            cloudinary()->uploadApi()->destroy($result['public_id']);
+            if (isset($result['public_id'])) {
+                // Hapus foto dari Cloudinary jika murid gagal disimpan
+                cloudinary()->uploadApi()->destroy($result['public_id']);
+            }
             return redirect()->route('admin.murid.index')->with('error', 'Gagal menambahkan data murid');
         }
 

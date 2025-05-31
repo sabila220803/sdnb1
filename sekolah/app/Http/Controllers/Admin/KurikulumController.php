@@ -96,9 +96,12 @@ class KurikulumController extends Controller
 
         $result = $kurikulum->update($data);
         if (!$result) {
-            cloudinary()->uploadApi()->destroy($file['public_id'], [
-                'resource_type' => 'raw'
-            ]);
+            if (isset($file) && $file['public_id']) {
+                // If the file upload failed, remove the uploaded file from Cloudinary
+                cloudinary()->uploadApi()->destroy($file['public_id'], [
+                    'resource_type' => 'raw'
+                ]);
+            }
             return redirect()->back()->with('error', 'Gagal memperbarui data Kalender Pendidikan');
         }
 

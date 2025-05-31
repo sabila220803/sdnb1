@@ -23,6 +23,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Route untuk halaman berita
 Route::get('/berita', [NewsController::class, 'index'])->name('berita.index');
+Route::get('/berita/{id}', [NewsController::class, 'show'])->name('berita.show');
 
 // Route untuk halaman profil
 Route::get('/profil/sejarah', [ProfilController::class, 'sejarah'])->name('profil.sejarah');
