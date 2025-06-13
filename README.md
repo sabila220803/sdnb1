@@ -6,8 +6,7 @@ Website resmi SDN Bandarharjo 1 Kota Semarang yang dibangun menggunakan Laravel 
 
 - PHP >= 8.1
 - Composer
-- MySQL/MariaDB
-- Node.js & NPM
+- MySQL
 - XAMPP/Laragon (opsional)
 
 ## Langkah Instalasi
