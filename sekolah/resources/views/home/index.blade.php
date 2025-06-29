@@ -37,6 +37,10 @@
         .prestasi-next:hover {
             opacity: 0.8;
         }
+        
+        .school-title, .city-title, .school-motto {
+            color: #ffffff;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
 @endpush
@@ -97,27 +101,32 @@
         </div>
     </div>
 
-
-
-    <div class="program-section">
+    <div class="berita-section">
         <div class="container py-5">
-            <h2 class="program-title text-center mb-5" data-aos="fade-up">Program Unggulan</h2>
-            <div class="program-wrapper">
-                <div class="program-list">
-                    @foreach ($programs as $program)
-                        <div class="program-item" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
-                            <a href="#" class="program-link">{{ $program['nama'] }}</a>
+            <h2 class="berita-title text-center mb-5" data-aos="fade-up">Berita</h2>
+            <div class="berita-wrapper">
+                @foreach ($news as $item)
+                    <div class="berita-item" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                        <div class="berita-image">
+                            <x-cloudinary::image public-id="{{ $item->public_id }}" alt="News {{ ucwords($item->judul) }}"
+                                transformation="c_fill,h_200,w_223,g_face,q_auto" loading="lazy"
+                                class="news img-fluid rounded mx-auto d-block"
+                                style="width: 223px; height: 200px; object-fit: cover; display: block;" />
                         </div>
-                    @endforeach
-                </div>
-                <div class="program-illustration" data-aos="fade-left" data-aos-delay="400">
-                    <img src="{{ asset('images/students.png') }}" alt="Program Illustration">
-                </div>
+                        <div class="berita-content">
+                            <div class="berita-date">{{ $item->created_at->format('d M Y') }}</div>
+                            <h3 class="berita-heading">{{ ucwords($item->judul) }}</h3>
+                            <a href="{{ route('berita.show', $item->id) }}" class="btn btn-primary">Baca Selengkapnya</a>
+                            {{-- <a href="{{ $item['link'] }}" class="btn btn-primary">Baca more</a> --}}
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="text-center mt-4">
+                <a href="{{ route('berita.index') }}" class="btn btn-outline-primary btn-lg">Berita Lainnya</a>
             </div>
         </div>
     </div>
-
-
 
     <div class="prestasi-section">
         <div class="container py-5">
@@ -149,7 +158,7 @@
                             })($prestasi->nama_peserta) }}
                             </h4>
                             <p style="color: #333;">Juara {{ ucwords(strtolower($prestasi->juara)) }}
-                                {{ ucwords(strtolower($prestasi->nama_lomba)) }} Tingkat
+                                {{ ucwords(strtolower($prestasi->nama_lomba)    ) }} Tingkat
                                 {{ ucwords(strtolower($prestasi->tingkat)) }} {{ $prestasi->tahun }}</p>
                         </div>
                     @endforeach
@@ -164,7 +173,29 @@
         </div>
     </div>
 
-    <div class="berita-section">
+    <div class="program-section">
+        <div class="container py-5">
+            <h2 class="program-title text-center mb-5" data-aos="fade-up">Program Unggulan</h2>
+            <div class="program-wrapper">
+                <div class="program-list">
+                    @foreach ($programs as $program)
+                        <div class="program-item" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                            <a href="#" class="program-link">{{ $program['nama'] }}</a>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="program-illustration" data-aos="fade-left" data-aos-delay="400">
+                    <img src="{{ asset('images/students.png') }}" alt="Program Illustration">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    
+
+    {{-- <div class="berita-section">
         <div class="container py-5">
             <h2 class="berita-title text-center mb-5" data-aos="fade-up">Berita</h2>
             <div class="berita-wrapper">
@@ -180,7 +211,6 @@
                             <div class="berita-date">{{ $item->created_at->format('d M Y') }}</div>
                             <h3 class="berita-heading">{{ ucwords($item->judul) }}</h3>
                             <a href="{{ route('berita.show', $item->id) }}" class="btn btn-primary">Baca Selengkapnya</a>
-                            {{-- <a href="{{ $item['link'] }}" class="btn btn-primary">Baca more</a> --}}
                         </div>
                     </div>
                 @endforeach
@@ -189,7 +219,7 @@
                 <a href="{{ route('berita.index') }}" class="btn btn-outline-primary btn-lg">Berita Lainnya</a>
             </div>
         </div>
-    </div>
+    </div> --}}
 @endsection
 @push('scripts')
     <!-- Prestasi Carousel Script -->

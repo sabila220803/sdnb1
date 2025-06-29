@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-5 pt-5">
+<div class="container mt-5 pt-5 mb-5 pb-5">
     <h1 class="text-center mb-4">LOMBA BAHASA JAWA 2021</h1>
     
     <div class="intro-text text-center mb-5">
