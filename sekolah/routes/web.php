@@ -11,6 +11,7 @@ use App\Http\Controllers\KontakController;
 use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\KurikulumController;
 use App\Http\Controllers\BeritaDetailController;
+use App\Http\Controllers\PPDBController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\PrestasiController;
@@ -21,6 +22,10 @@ use App\Http\Controllers\Admin\KurikulumController as AdminKurikulumController;
 
 // Route untuk halaman utama
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Route untuk PPDB
+Route::get('/gabung', [PPDBController::class, 'index'])->name('ppdb.index');
+Route::post('/ppdb/daftar', [PPDBController::class, 'store'])->name('ppdb.store');
 
 // Route untuk halaman berita
 Route::get('/berita', [NewsController::class, 'index'])->name('berita.index');
@@ -55,7 +60,7 @@ Route::post('/hubungi-kami/kritik-saran', [KritikSaranController::class, 'store'
 Route::get('/kurrikulum/sekolah', [KurikulumController::class, 'sekolah'])->name('kurikulum.sekolah');
 Route::get('/kurrikulum/kalender', [KurikulumController::class, 'kalender'])->name('kurikulum.kalender');
 Route::get('/kurrikulum/video', [KurikulumController::class, 'video'])->name('kurikulum.video');
-Route::get('/kurikulum/download/{id}', [KurikulumController::class, 'download'])->name('kurikulum.download');
+Route::get('/kurrikulum/download/{id}', [KurikulumController::class, 'download'])->name('kurikulum.download');
 
 // Route untuk autentikasi
 Route::get('/login', [AuthController::class, 'index'])->name('login');

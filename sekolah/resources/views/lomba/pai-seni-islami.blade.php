@@ -29,7 +29,7 @@
             <!-- Link Materi Lengkap -->
             <div class="text-center mb-5">
                 <h3 class="mb-3">MATERI LOMBA MAPSI</h3>
-                <a href="#" class="btn btn-primary btn-lg">Download Materi Lengkap (Google Drive)</a>
+                <a href="https://drive.google.com/file/d/1ggpIcNvnLYeiABKI52JgQluOmpzBAIzh/view?usp=sharing" class="btn btn-primary btn-lg" target="_blank">Download Materi Lengkap (Google Drive)</a>
             </div>
             
             <!-- Video YouTube -->

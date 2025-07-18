@@ -74,9 +74,9 @@
                                         target="_blank">Video</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item mx-2">
+                        {{-- <li class="nav-item mx-2">
                             <a class="nav-link text-white" href="/website-terkait">WEBSITE TERKAIT</a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item dropdown mx-2">
                             <a class="nav-link text-white dropdown-toggle" href="#" id="hubungiKamiDropdown"
                                 role="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -34,16 +34,16 @@
             <div class="col-md-4 mb-4">
                 <h4 class="mb-3" style="font-weight: 600;">Media Sosial</h4>
                 <div class="d-flex gap-4">
-                    <a href="#" class="text-white" style="font-size: 1.8rem;">
+                    <a href="https://www.facebook.com/p/SDN-Bandarharjo-01-Semarang-100062864415370/" class="text-white" style="font-size: 1.8rem;">
                         <i class="fab fa-facebook"></i>
                     </a>
-                    <a href="#" class="text-white" style="font-size: 1.8rem;">
+                    <a href="https://www.instagram.com/sdnbandarharjo01/" class="text-white" style="font-size: 1.8rem;">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="#" class="text-white" style="font-size: 1.8rem;">
+                    <a href="https://www.youtube.com/@sdnbandarharjo0154/videos" class="text-white" style="font-size: 1.8rem;">
                         <i class="fab fa-youtube"></i>
                     </a>
-                    <a href="#" class="text-white" style="font-size: 1.8rem;">
+                    <a href="https://wa.me/6288239274705" class="text-white" style="font-size: 1.8rem;">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
@@ -51,10 +51,10 @@
                 <!-- Tambahan Alamat Website -->
                 <div class="mt-4">
                     <i class="fas fa-globe me-2"></i>
-                    <a href="https://www.sdnbandarharjo.sch.id" 
+                    <a href="https://dapo.dikdasmen.go.id/sekolah/39599F1C29EC36DA8EDA" 
                        style="color: white; text-decoration: none;"
                        target="_blank">
-                       www.sdnbandarharjo.sch.id
+                       dapo.dikdasmen.go.id
                     </a>
                 </div>
             </div>
